@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    networks:
+      - my_network
+    volumes:
+      - ./client:/app/frontend
+
+  backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongodb
+    networks:
+      - my_network
+    volumes:
+      - ./api:/app/backend
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - my_network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  mongo-data:
